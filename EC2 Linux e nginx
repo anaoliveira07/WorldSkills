@@ -1,0 +1,58 @@
+Como subir um site usando EC2 Linux com o nginx:
+
+1- Criar uma instancia EC2 Linux
+
+2- Atualizar os pacotes do sistema:
+   - sudo yum update -y
+
+3- Instalar o Nginx no Amazon Linux 1:
+   - sudo yum install -y epel-release
+   - sudo yum install -y nginx
+
+4- Iniciar o Nginx:
+   - sudo systemctl start nginx
+   - sudo systemctl enable nginx
+
+5- Configurar o Nginx:
+  - cd /usr/share/nginx/html  (diretório padrão onde o Nginx armazena os arquivos HTML)
+  - sudo nano index.html (editar arquivo)
+
+6- html pronto
+
+
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Aniversário!</title>
+    <style>
+        body {
+            background-color: black;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+        h1 {
+            color: #ff6347;
+            font-size: 50px;
+            margin-top: 100px;
+        }
+        .message {
+            color: white;
+            background-color: #ff1493;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Feliz Aniversário!</h1>
+    <div class="message">Que seu dia seja cheio de alegria!</div>
+</body>
+</html>
