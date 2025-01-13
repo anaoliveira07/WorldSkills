@@ -1,0 +1,118 @@
+COMO SUBIR UMA IMAGEM DO DOCKER DESKTOP PARA UMA INSTÂNCIA EC2?
+
+1- Escolha qualquer imagem da sua preferencia e dê PULL nela. (a escolhida aqui foi httpd)
+
+2- Crie uma instância "Amazon Linux 2" e marque o acesso SSh, HTTPS e HTTP.
+
+3- Atualize o sistema e instale o Docker:
+   - sudo yum update -y
+   - sudo amazon-linux-extras install docker
+
+4- Inicie o serviço do Docker:
+   - sudo service docker start
+
+5- Para garantir que o Docker inicie automaticamente após reiniciar a instância, execute:
+   - sudo systemctl enable docker
+
+6- Puxar a imagem httpd:
+   - sudo docker pull httpd
+
+7- Rodar o container com a imagem httpd:
+   - sudo docker run -d -p 80:80 httpd
+
+> Pronto, você conseguiu! Agora pegue o IP Publico da sua instância e cole no seu navegador. você verá uma página com algo como "It works!" ou a página de boas vindas da Apache.
+
+COMO EDITAR O HTML DO DOCKER?
+
+1- Acessar o container Docker:
+  - sudo docker ps
+
+  *Isso retornará algo como:   CONTAINER ID   IMAGE   COMMAND                  CREATED        STATUS        PORTS                  NAMES
+                               123456789abc   httpd   "httpd-foreground"       2 minutes ago Up 2 minutes 0.0.0.0:80->80/tcp     thirsty_euler
+ 
+  *No exemplo acima, o nome do container é thirsty_euler. Anote o nome ou o ID do seu container.
+
+2- Acessar o shell do container:
+   - sudo docker exec -it thirsty_euler /bin/bash (Substitua thirsty_euler pelo nome ou ID do seu container)
+
+3- Editar os arquivos HTML:
+
+echo '<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Site</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #FF6347;
+        }
+        p {
+            font-size: 24px;
+            color: #4682B4;
+            font-weight: bold;
+        }
+        .modalidade {
+            font-size: 22px;
+            color: #32CD32;
+            font-weight: bold;
+        }
+        .imagem {
+            max-width: 80%; /* Ajusta a imagem ao tamanho da tela */
+            height: auto;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Olá, meu nome é Ana Letícia</h1>
+    <p class="modalidade">Modalidade: #53 Computação em Nuvem</p>
+    
+    <!-- Referenciando a imagem local -->
+    <img src="https://mtec.com.vc/wp-content/uploads/2024/10/CAPA-COMPUTACAO-EM-NUVEM.png" alt="Cloud Computing">
+
+</body>
+</html>' > /usr/local/apache2/htdocs/index.html
+
+4- Crie um diretório local para os arquivos HTML:
+   - mkdir -p /home/usuario/html
+
+5- Rodar o container com volume:
+   - sudo docker run -d -p 80:80 -v /home/usuario/html:/usr/local/apache2/htdocs/ httpd
+
+   *Coloquei esse comando por precaução, coloque e veja se ele funciona. COmigo ele não funcionou, mas mesmo assim, quando recarreguei o site, o html tinha funcionado.
+
+COMO PARAR E COMEÇAR DE NOVO SUA IMAGEM?
+
+*Se você estiver dentro do conteiner, saia dele e fique só no EC2-user. Mas se mesmo assim não funcionar, feche a aba e entre de novo em conectar a instância.
+
+1- Verificar os containers em execução:
+   - sudo docker ps
+
+   *Vai aparecer novamente algo como isso: CONTAINER ID   IMAGE          COMMAND                  CREATED        STATUS       PORTS                  NAMES
+                                           abc123456789   httpd          "httpd-foreground"        2 hours ago    Up 2 hours   0.0.0.0:80->80/tcp     cool_httpd
+
+2- Parar o container:
+   - sudo docker stop <container_id>
+                  ou
+   - sudo docker stop <container_name>
+
+   *Recarregue a pagina onde está seu site e veja se realmente parou.
+
+3- Começar o conteiner novamente: 
+   - sudo docker start <container_id>
+                   ou
+   - sudo docker start <container_name>
+
+4- Remover container: (depois de parar) *SÓ SE FOR PEDIDO*
+   - sudo docker rm cool_httpd
+
+
