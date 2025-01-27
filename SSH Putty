@@ -1,0 +1,117 @@
+tutorial ssh putty
+
+putty ssh tutorial
+
+criar instancia EC2 
+criar key pair > baixar em formato .ppk
+entrar no putty > ssh > Auth > browse > arquivo ppk 
+Session 
+console aws > seleciona a instancia > connect > SSH > copia o endereço
+cola em session
+nome de usuario vai estar no public dns
+
+Subir site pelo EC2 usando ubuntu
+
+habilitar acesso a porta 85
+sudo apt update
+sudo apt install nginx
+cd /var/www/html
+nano index.html
+cd /var/www/html
+nano index.html
+cd /etc/nginx/sites-available/
+sudo nano default
+alterar: server_name instance ipv4;
+alterar: proxy_pass instance ipv4:85;
+alterar o cometario 
+mudar para 85 os 2 80
+abaixo de server_name: root /var/www/html;
+                       index index.html
+sudo nano /usr/share/nginx/html (testar essa)
+
+Subir site pelo EC2 usando linux
+
+
+1- Criar uma instancia EC2 Linux
+
+2- Atualizar os pacotes do sistema:
+   - sudo yum update -y
+
+3- Instalar o Nginx no Amazon Linux 1:
+   - sudo yum install -y epel-release
+   - sudo yum install -y nginx
+
+4- Iniciar o Nginx:
+   - sudo systemctl start nginx
+   - sudo systemctl enable nginx
+
+5- Configurar o Nginx:
+  - cd /usr/share/nginx/html  (diretório padrão onde o Nginx armazena os arquivos HTML)
+  - sudo nano index.html (editar arquivo)
+
+
+subir apenas o nginx pelo ec2 usando linux 2
+sudo yum update -y
+
+sudo amazon-linux-extras enable nginx1
+sudo yum install nginx -y
+
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+
+
+Subir docker pelo Ec2 usando repositorio github
+
+sudo yum update -y
+
+sudo yum install docker -y
+sudo service docker start
+sudo usermod -aG docker ec2-user
+-fechar o terminal e voltar
+
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+
+sudo yum install git -y
+
+git clone https://github.com/fabricioveronez/catalogo-docker-compose.git
+cd catalogo-docker-compose/Grafana
+
+docker-compose up -d
+ja esta rodando se quiser testar -> "docker ps"
+
+http://<IP-PÚBLICO-DA-EC2>:porta especifica do docker ex: 80, 3000, 443
+
+
+subir docker direto pelo docker usando ec2 
+
+sudo yum update -y
+sudo yum install docker -y
+sudo service docker start
+sudo usermod -aG docker ec2-user
+(sair do terminal e voltar)
+
+docker pull grafana/grafana
+
+docker run -d -p 9000:9000 portainer/portainer
+
+docker ps
+
+docker stop *imagem*
+
+
+html padrao 
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olá</title>
+</head>
+<body>
+    <h1>Olá, sou a Ana</h1>
+</body>
+</html>
