@@ -1,0 +1,79 @@
+*Mudar o nome dos logs pelo lambda:*
+
+import json
+import boto3
+from datetime import datetime, timedelta
+
+# Simulando uma memória temporária para rastrear exclusões e adições
+recent_events = {}
+
+def lambda_handler(event, context):
+    global recent_events
+    current_time = datetime.utcnow()
+
+    for record in event['Records']:
+        event_name = record['eventName']
+        bucket_name = record['s3']['bucket']['name']
+        object_key = record['s3']['object']['key']
+        event_time = current_time.strftime('%Y-%m-%d %H:%M:%S')
+
+        # Adição de objetos
+        if "ObjectCreated" in event_name:
+            print(f"[ADIÇÃO] Objeto adicionado ao bucket {bucket_name}: {object_key}")
+            # Armazena a adição em memória
+            recent_events[object_key] = {"type": "added", "time": event_time}
+
+        # Exclusão de objetos
+        elif "ObjectRemoved" in event_name:
+            print(f"[EXCLUSÃO] Objeto removido do bucket {bucket_name}: {object_key}")
+            # Verifica se uma renomeação ocorreu
+            if object_key in recent_events and recent_events[object_key]["type"] == "added":
+                print(f"[RENOMEAÇÃO] Objeto {object_key} foi renomeado recentemente no bucket {bucket_name}")
+                # Remove o evento processado
+                del recent_events[object_key]
+            else:
+                # Armazena a exclusão em memória
+                recent_events[object_key] = {"type": "deleted", "time": event_time}
+
+    # Limpeza de eventos antigos
+    recent_events = {
+        key: value for key, value in recent_events.items()
+        if datetime.strptime(value["time"], '%Y-%m-%d %H:%M:%S') > current_time - timedelta(minutes=5)
+    }
+
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Logs processados com sucesso.')
+    }
+
+
+
+
+
+
+
+
+
+
+*Puxar imagem do Github:*
+sudo yum update -y
+
+sudo yum install docker -y
+sudo service docker start
+sudo usermod -aG docker ec2-user
+-fechar o terminal e voltar
+
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+
+sudo yum install git -y
+
+git clone https://github.com/fabricioveronez/catalogo-docker-compose.git
+cd catalogo-docker-compose/Grafana
+
+docker-compose up -d
+ja esta rodando se quiser testar eh so dar "docker ps"
+
+http://<IP-PÚBLICO-DA-EC2>:porta especifica do docker ex: 80, 3000, 443
+
